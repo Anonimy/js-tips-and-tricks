@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./css/index.css" />
+  <title>JS - Tips &amp; Tricks</title>
+</head>
+<body>
+  <header>
+    <h1 style="text-align: center;">
+      <img src="./assets/js-logo.png" />
+      <br />
+      Tips &amp; Tricks
+    </h1>
+  </header>
+  <section class="container">
+    <div>
+      <h2>#1 - Javascript is synchronous, but it can be Asynchronous</h2>
+      <p>Isso não significa que as coisas precisam ser difíceis de se entender, somente que as coisas acontecem em momentos diferentes do que se lê.</p>
+      <div class="code-block">
+        <code>
+          <span class="code">
+            window.onload = function () {
+              <p class="code-comment">// Essa é a SEGUNDA coisa que será executada na página.</p>
+              <span class="code">console.log('Não é mágica, é javascript!');</span>
+            };
+          </span>
+          <br /><br />
+          <p class="code-comment">// Essa é a PRIMEIRA coisa que será executada na página.</p>
+          <span class="code">console.log('Bem-vindo ao manual de sobrevivência escolar do js :)');</span>
+        </code>
+      </div>
+      <p>
+        Executando o código, vemos que a aba do navegador só termina de carregar quando o console.log() de boas-vindas termina de carregar.
+        Isso se aplica a qualquer função do seu código. O loading do javascript é bloqueante para
+        o navegador, por isso é normal trabalhar com o que chamamos de CALLBACKS.
+      </p>
+      <p>
+        Vamos para um exemplo mais visível. Execute na sua página o código junto com o código apresentado acima.
+        <br/>
+        <small>(CUIDADO: pode travar em alguns PCs beem fracos, altere para um número menor se for o seu caso)</small>
+      </p>
+      <div class="code-block">
+        <code>
+          <span class="code">
+            function tip1() {
+              <span class="code">
+                for (let i = 0; i &lt; 10000; i++) {
+                  <span class="code">console.log('Carregando...');</span>
+                }
+              </span>
+              <span class="code">
+                console.log('Pronto!');
+              </span>
+            }
+            <br /><br />
+            tip1();
+          </span>
+        </code>
+      </div>
+      <p>
+        Para solucionar o problema do travamento, utilizamos uma função de CALLBACK no carregamento da página.
+        Ou seja, todo nosso código só deveria executar quando a página já estivesse completamente montada.
+      </p>
+    </div>
+    <div class="code-block">
+      <code>
+        <span class="code">
+          function tip1() {
+            <span class="code">
+              for (let i = 0; i &lt; 10000; i++) {
+                <span class="code">console.log('Carregando...');</span>
+              }
+            </span>
+            <span class="code">
+              console.log('Pronto!');
+            </span>
+          }
+          <br /><br />
+          window.onload = function () {
+            <span class="code">tip1();</span>
+          }
+        </span>
+      </code>
+    </div>
+    <div>
+      <h2>#2 - Challenge: Check the box to push the button</h2>
+      <p>
+        Uma situação comum que enfrentamos no dia-a-dia quando programamos para web é ter que
+        liberar um campo de formulário somente quando um outro campo é preenchido. Essa é uma clássica
+        introdução ao Javascript assíncrono. Eis o que estaremos construindo:
+      </p>
+      <div class="challenge">
+        <div>
+          <label for="c01Input">
+            <input type="checkbox" id="c01Input" />
+            Concordo com os termos de uso
+          </label>
+        </div>
+        <br />
+        <div>
+          <button type='button' id="c01Button" disabled>
+            Enviar
+          </button>
+        </div>
+      </div>
+      <p>Recomendo tentar construir você mesm@. Vou mostrar uma possível solução.</p>
+      <p>
+        O primeiro passo para resolver qualquer problema é quebrar ele em partes.
+        Para construirmos um checkbox que habilita um botão, primeiro precisamos de um checkbox e de um botão aparecendo na tela.
+      </p>
+      <div class="code-block">
+        <code>
+          <span class="code">
+            &lt;label to="myInput"&gt;
+            <span class="code">
+              &lt;input type="checkbox" id="myInput"&gt; Concordo com os termos de uso
+            </span>
+            &lt;/label&gt;
+          </span>
+          <br />
+          <span class="code">
+            &lt;button type="button" id="myButton" disabled&gt;Enviar&lt;/button&gt;
+          </span>
+        </code>
+      </div>
+      <p>O segundo passo é conseguir acessar os elementos na tela através do Javascript. Para isso, podemos salvá-los em variáveis da seguinte forma:</p>
+      <div class="code-block">
+        <code>
+          <span class="code">var $myInput = document.querySelector('#myInput');</span>
+          <span class="code">var $myButton = document.querySelector('#myButton');</span>
+        </code>
+      </div>
+      <p>Beleza. Temos acesso aos elementos do DOM. Vamos retomar o problema que precisamos resolver: preciso "ativar" o input para poder liberar o botão, então:</p>
+      <div class="code-block">
+        <code>
+          <span class="code">var $myInput = document.querySelector('#myInput');</span>
+          <span class="code">var $myButton = document.querySelector('#myButton');</span>
+          <br />
+          <p class="code-comment">
+            // Decidi usar o change porque o usuário tem múltiplas formas de ativar o input
+            (apertando tab e clicando na barra de espaço, ou clicando no label, por exemplo)
+          </p>
+          <span class="code">
+            $myInput.addEventListener('change', function () {
+              <span class="code">
+                console.log('Meu input está ativo?', $myInput.checked);
+              </span>
+              <p class="code-comment">// mudarEstadoDoBotao();</p>
+            });
+          </span>
+        </code>
+      </div>
+      <p>Agora conseguimos ver quando o checkbox está ativo ou inativo. Precisamos fazer com que o botão seja liberado.</p>
+      <div class="code-block">
+        <code>
+          <span class="code">var $myInput = document.querySelector('#myInput');</span>
+          <span class="code">var $myButton = document.querySelector('#myButton');</span>
+          <br />
+          <p class="code-comment">
+            // Decidi usar o change porque o usuário tem múltiplas formas de ativar o input
+            (apertando tab e clicando na barra de espaço, ou clicando no label, por exemplo)
+          </p>
+          <span class="code">
+            $myInput.addEventListener('change', function () {
+              <p class="code-comment">mudarEstadoDoBotao($myInput.checked);</p>
+            });
+          </span>
+          <br /><br />
+          <span class="code">
+            function mudarEstadoDoBotao(enabled) {
+              <span class="code">
+                if (enabled) {
+                  <span class="code">$myButton.removeAttribute('disabled')</span>
+                } else {
+                  <span class="code">$myButton.setAttribute('disabled', true)</span>
+                }
+              </span>
+            }
+          </span>
+        </code>
+      </div>
+    </div>
+  </section>
+  <script src="./js/index.js"></script>
+</body>
+</html>
